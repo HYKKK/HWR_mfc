@@ -1,0 +1,41 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: WriteDown - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP6A9.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Debug/" /Fp"Debug/WriteDown.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Documents and Settings\Administrator\바탕 화면\오우토우마타\WriteDown(Origin)\Code(12-03)\InputWnd.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP6A9.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP6AA.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/WriteDown.pdb" /debug /machine:I386 /out:"Debug/WriteDown.exe" /pdbtype:sept 
+".\Debug\InputWnd.obj"
+".\Debug\ObPoint.obj"
+".\Debug\StdAfx.obj"
+".\Debug\WriteDown.obj"
+".\Debug\WriteDownDlg.obj"
+".\Debug\WriteDown.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP6AA.tmp"
+<h3>Output Window</h3>
+Compiling...
+InputWnd.cpp
+C:\Documents and Settings\Administrator\바탕 화면\오우토우마타\WriteDown(Origin)\Code(12-03)\InputWnd.cpp(147) : warning C4101: 'Point' : unreferenced local variable
+C:\Documents and Settings\Administrator\바탕 화면\오우토우마타\WriteDown(Origin)\Code(12-03)\InputWnd.cpp(149) : warning C4101: 'oldPen' : unreferenced local variable
+C:\Documents and Settings\Administrator\바탕 화면\오우토우마타\WriteDown(Origin)\Code(12-03)\InputWnd.cpp(146) : warning C4101: 'pPoint' : unreferenced local variable
+C:\Documents and Settings\Administrator\바탕 화면\오우토우마타\WriteDown(Origin)\Code(12-03)\InputWnd.cpp(145) : warning C4101: 'pos' : unreferenced local variable
+Linking...
+
+
+
+<h3>Results</h3>
+WriteDown.exe - 0 error(s), 4 warning(s)
+</pre>
+</body>
+</html>
