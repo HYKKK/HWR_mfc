@@ -78,7 +78,7 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CInputWnd message handlers
-
+// TODO 마우스 떼었을 때 방향성 추가
 void CInputWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	initX = point.x;
@@ -144,6 +144,7 @@ void CInputWnd::OnLButtonUp(UINT nFlags, CPoint point)
 	Simplification(m_InputDetail);
 	m_pSCodeEdit->SetWindowText(m_SCode);
 
+	// TODO 여기에서 방향성 추가
 	// 끊어진 것을 나타내는 포인트 추가
 	CObPoint* pPoint = new CObPoint(-1, -1);
 	m_Points.AddTail(pPoint);
@@ -216,6 +217,7 @@ void CInputWnd::OnPaint()
 
 }
 
+// TODO & -> 마우스를 떼었을 때의 방향
 CString CInputWnd::Simplification(CString src)
 {
 	char* ssrc = (LPSTR)(LPCTSTR)src;
@@ -380,6 +382,7 @@ CString CInputWnd::Simplification(CString src)
 	return m_SCode;
 }
 
+// TODO 따로 class 생성하여 모듈화하고 정리
 void CInputWnd::getKorean(CString scode)
 {
 	CString conting = "ㄱㄷㅂㅅㅈㄴ";
@@ -784,6 +787,7 @@ void CInputWnd::getKorean(CString scode)
 	jongFile.Close();
 }
 
+
 CString CInputWnd::mergeJaso(CString choSung, CString jungSung, CString jongSung)
 {
 	CString ChoSungTbl = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
@@ -959,30 +963,7 @@ bool  CInputWnd::preventDupJong(CString sCode) {
 	file.Close();
 	return alreadyExist;
 }
-/*
-bool CInputWnd::preventDup(CStdioFile file ,CString sCode ) {
 
-bool alreadyExist = false;
-CString sLine, sToken;
-//CStdioFile file;
-//file.Open(_T("filename"), CStdioFile::modeRead);
-
-
-while (file.ReadString(sLine))  // 한 줄씩 읽어들임
-{
-
-//for (int i=0;AfxExtractSubString(sToken, sLine, i, '|' );i++)    // ','로 파싱
-AfxExtractSubString(sToken, sLine, 1, '|' );
-
-if(sToken==sCode){
-
-alreadyExist = true;
-break;
-}
-}
-return alreadyExist;
-}
-*/
 void  CInputWnd::inputScodeToCho() {
 
 
