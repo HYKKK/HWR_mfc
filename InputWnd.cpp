@@ -382,6 +382,47 @@ CString CInputWnd::Simplification(CString src)
 	return m_SCode;
 }
 
+void CInputWnd::MakeDB()
+{
+	char *c;
+	char *remain;
+	char *chbuf;
+	char *chremain;
+	char *dbuf = NULL;
+	int endX,endY,d;
+	CstdioFile cho;
+	CFileStatus fs;
+	choFile.Open(_T("cho.txt"), CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL);
+	if (choFile.GetStatus(fs) && fs.m_size > 0)
+	{
+		PCHAR buf = new CHAR[fs.m_size + 10];
+		if (buf != NULL)
+		{
+			for (int i = 0; i < fs.m_size;)
+				i += choFile.Read((PVOID)&buf[i], fs.m_size);
+			buf[fs.m_size] = NULL;
+		}
+	}
+	do{
+		c = strtok_s(buf, " ", &remain);
+		chbuf = strtok_s(NULL, "\n", &remain);
+		endX = (int)strtok_s(chbuf, " (,", &remain);
+		endY = (int)strtok_s(NULL, ")", &remain);
+		do{	
+			d = EvalDirection((int)strtok_s(NULL, " (,", &remain) - EndX,
+				(int)strtok_s(NULL, ")", &remain) - EndY);
+			endX = (int)strtok_s(NULL, " (,", &remain);
+			endY = (int)strtok_s(NULL, ")", &remain);
+			dbuf += d;
+		} while (chremain != NULL)
+		choFile.Close();
+		choFile.Open(_T("chosung.txt"), CFile::modeWrite | CFile::tpyeText);
+		choFile.WriteString((c + dbuf));
+		choFile.Close();
+	} while (remain != NULL)
+	
+}
+
 // TODO 따로 class 생성하여 모듈화하고 정리
 void CInputWnd::getKorean(CString scode)
 {
