@@ -41,6 +41,9 @@ CInputWnd::CInputWnd()
 	jungCode = _T("");
 	jongCode = _T("");
 
+	chof = _T("Cho.txt");
+	jungf = _T("Jung.txt");
+	jongf = _T("Jong.txt");
 
 	cho = false;
 	jung = false;
@@ -48,6 +51,7 @@ CInputWnd::CInputWnd()
 	bTmp = false;
 	bTmp2 = false;
 	rb = 0;
+
 }
 
 CInputWnd::~CInputWnd()
@@ -382,7 +386,7 @@ CString CInputWnd::Simplification(CString src)
 	return m_SCode;
 }
 
-void CInputWnd::MakeDB()
+void CInputWnd::MakeDB(CString)
 {
 	char *c;
 	char *remain;
