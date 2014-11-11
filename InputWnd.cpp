@@ -52,6 +52,9 @@ CInputWnd::CInputWnd()
 	bTmp2 = false;
 	rb = 0;
 
+	MakeDB(chof);
+	MakeDB(jungf);
+	MakeDB(jongf);
 }
 
 CInputWnd::~CInputWnd()
@@ -91,7 +94,7 @@ void CInputWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	pmY = mY;
 
 
-
+	m_InputDetail += EvalDirection(endX - initX, endY - initY);
 	// 포인트 추가
 
 	/*
@@ -386,44 +389,63 @@ CString CInputWnd::Simplification(CString src)
 	return m_SCode;
 }
 
-void CInputWnd::MakeDB(CString)
+//좌표 DB를 받아 Simple code로 변환후 기존 DB에 저장하는 함수
+void CInputWnd::MakeDB(CString str)
 {
-	char *c;
-	char *remain;
-	char *chbuf;
-	char *chremain;
-	char *dbuf = NULL;
+	CString c;
+	char * remain;
+	char * abuf;
+	char * chbuf;
+	char * dbuf;
+	CString dstr;
+	CString sc;
 	int endX,endY,d;
-	CstdioFile cho;
+	CStdioFile f;
 	CFileStatus fs;
-	choFile.Open(_T("cho.txt"), CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL);
-	if (choFile.GetStatus(fs) && fs.m_size > 0)
+
+	f.Open(str, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL);
+	if (f.GetStatus(fs) && fs.m_size > 0)
 	{
 		PCHAR buf = new CHAR[fs.m_size + 10];
 		if (buf != NULL)
 		{
 			for (int i = 0; i < fs.m_size;)
-				i += choFile.Read((PVOID)&buf[i], fs.m_size);
+				i += f.Read((PVOID)&buf[i], fs.m_size);
 			buf[fs.m_size] = NULL;
+			abuf = buf;
 		}
 	}
 	do{
-		c = strtok_s(buf, " ", &remain);
+		c = strtok_s(abuf, " ", &remain);
 		chbuf = strtok_s(NULL, "\n", &remain);
 		endX = (int)strtok_s(chbuf, " (,", &remain);
 		endY = (int)strtok_s(NULL, ")", &remain);
-		do{	
-			d = EvalDirection((int)strtok_s(NULL, " (,", &remain) - EndX,
-				(int)strtok_s(NULL, ")", &remain) - EndY);
+		do{
+			d = EvalDirection((int)strtok_s(NULL, " (,", &remain) - endX,
+				(int)strtok_s(NULL, ")", &remain) - endY);
 			endX = (int)strtok_s(NULL, " (,", &remain);
 			endY = (int)strtok_s(NULL, ")", &remain);
 			dbuf += d;
-		} while (chremain != NULL)
-		choFile.Close();
-		choFile.Open(_T("chosung.txt"), CFile::modeWrite | CFile::tpyeText);
-		choFile.WriteString((c + dbuf));
-		choFile.Close();
-	} while (remain != NULL)
+		} while (remain != NULL);
+		f.Close();
+		dstr = dbuf;
+		sc = Simplification(dstr);
+		if (str == "Cho.txt"){
+		f.Open(_T("chosung.txt"), CFile::modeWrite | CFile::typeText);
+		f.WriteString((c + sc));
+		f.Close();
+		}
+		else if (str == "Jung.txt"){
+			f.Open(_T("jungsung.txt"), CFile::modeWrite | CFile::typeText);
+			f.WriteString((c + sc));
+			f.Close();
+		}
+		else if (str == "Jong.txt"){
+			f.Open(_T("jongsung.txt"), CFile::modeWrite | CFile::typeText);
+			f.WriteString((c + sc));
+			f.Close();
+		}
+	} while (remain != NULL);
 	
 }
 
