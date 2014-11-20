@@ -2,15 +2,16 @@
 #define HANGUEL_H
 
 #include <iterator>
-#include <map>
 #include <regex>
 
+#include <unordered_map>
 #include "stdafx.h"
 
-#define KOREAN std::map<SCode, HanGuel> 
+#define KOREAN	std::unordered_map<SCode, HanGuel> 
+#define HANGUEL std::pair<SCode, HanGuel>
 
-typedef CString HanGuel;
-typedef CString SCode;
+typedef LPCTSTR HanGuel;
+typedef LPCTSTR SCode;
 
 #define FILE_CHO		"chosung.txt"
 #define FILE_JUNG		"jungsung.txt"
@@ -22,20 +23,42 @@ typedef CString SCode;
 
 #define QUESTION_MARK _T("?")
 
+static CString buf;
 class Korean {
 
 protected :
 	KOREAN map;
-
+	CStdioFile file;
 public : 
+	virtual void training(CString FILENAME) {
+		CString hanguel;
+		CString scode;
+
+		if (!file.Open(FILENAME, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL)) {//  기존 파일을 읽기 모드 | 다른 프로세스에서의 접근(읽기, 쓰기를 못하게 함)
+			AfxMessageBox(FILENAME + " OPEN ERROR!");
+			return;
+		}
+	
+		while (file.ReadString(buf)) {
+			AfxExtractSubString(hanguel, buf, 0, '|');
+			AfxExtractSubString(scode, buf, 1, '|');
+
+			this->registerHanguel(scode, hanguel, 0);
+		}
+	}
 	//TODO duplicate 처리
-	virtual void registerHanguel(SCode scode, HanGuel hanguel) {
-		map.insert(scode, hanguel);
+	// if option == 1 db.file insert else if option = 0, just insert map
+	virtual void registerHanguel(SCode scode, HanGuel hanguel, int option) {
+		map.insert( KOREAN::value_type(scode, hanguel));
+		if (option)  {
+			file.SeekToEnd();
+			file.WriteString("\n" + (CString)hanguel + "|" + scode);
+		}
 	}
 	virtual HanGuel find(SCode scode) {
 		KOREAN::iterator iter = map.find(scode);
 
-		if (iter != map.end())
+		if (iter == map.end())
 			iter->second = QUESTION_MARK;
 
 		return iter->second;
@@ -47,8 +70,8 @@ private :
 	
 public :
 	//open file and fill map
-	Cho() {
-		
+	Cho() {	
+		training(FILE_CHO);
 	}
 
 	//학습. map에 추가. need test
@@ -61,7 +84,6 @@ public :
 	}
 	HanGuel find(const SCode& scode);
 
-	//map에 있는거 file에 저장
 	~Cho() {
 		
 	}
@@ -72,15 +94,14 @@ public:
 	//open file and fill map
 	Jung() {
 		//open file and fill map
+		training(FILE_JUNG);
 	}
 
 	//학습. map에 추가
 	void registerHanguel(SCode scode, HanGuel hanguel);
 	HanGuel find(const SCode& scode);
 
-	//map에 있는거 file에 저장
 	~Jung() {
-
 	}
 };
 
@@ -88,14 +109,13 @@ class Jong : protected Korean {
 public:
 	//open file and fill map
 	Jong() {
-
+		training(FILE_JUNG);
 	}
 
 	//학습. map에 추가
 	void registerHanguel(SCode scode, HanGuel hanguel);
 	HanGuel find(const SCode& scode);
 
-	//map에 있는거 file에 저장
 	~Jong() {
 
 	}
