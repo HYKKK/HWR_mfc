@@ -8,6 +8,7 @@
 #include "stdafx.h"
 #include "WriteDown.h"
 #include "InputWnd.h"
+#include "Hanguel.h"
 
 using namespace std;
 
@@ -428,6 +429,116 @@ void CInputWnd::getKorean(CString scode)
 		}
 	}
 
+
+
+
+
+
+
+	//scode로 글자 찾는 함수
+	Cho *chof = new Cho();
+	Jung *jungf = new Jung();
+	Jong *jongf = new Jong();
+
+	CString totalTok[50];
+	CString choTok;
+	CString jungTok;
+	CString jongTok;
+	CString getCho;
+	CString getJung;
+	CString getJong;
+
+	int choCnt = 0;
+	int jungCnt = 0;
+	int jongCnt = 0;
+	int i = 0;
+
+	//scode 잘라서 totalTok에 저장
+	while (AfxExtractSubString(totalTok[i++], scode, i++, '&') != NULL);
+	
+	//초성 확인
+	choTok += totalTok[choCnt++];
+	while (1){
+		if ((getCho = (chof->find(choTok))) != '?'){
+			if (totalTok[choCnt] == '\0'){
+				//getCho 반환
+			}
+			else
+				break;
+		}
+		else if ((getCho = (chof->find(choTok))) == '?'){
+			if (totalTok[choCnt] == '\0'){
+
+				goto TOTALJUNGCHECK;
+			}
+			else
+			CHOCHECK:
+			choTok += '&' + totalTok[choCnt++];
+		}
+	}
+
+	//중성 확인
+	jungCnt = choCnt;
+	jungTok += totalTok[jungCnt++];
+	while (1){
+		if ((getJung = (jungf->find(jungTok))) != '?'){
+			if (totalTok[jungCnt] == '\0'){
+				//getCho + getJung 반환
+			}
+			else
+				break;
+		}
+		else if ((getJung = (jungf->find(jungTok))) == '?'){
+			if (totalTok[jungCnt] == '\0'){
+				jungTok = '\0';
+				goto CHOCHECK;
+			}
+			else
+				JUNGCHECK:
+				jungTok += '&' + totalTok[jungCnt++];
+		}
+	}
+
+	//마지막에 중성 또는 ? 확인
+	TOTALJUNGCHECK:
+	if (jungTok == '\0'){
+		if (((jungTok = jungf->find(scode))) != '\0'){
+			//jungTok 반환
+		}
+		else if (((jungTok = jungf->find(scode))) != '\0'){
+			//'?' 반환
+		}
+
+
+	}
+
+	//종성 확인
+	jongCnt = jungCnt;
+	jongTok += totalTok[jongCnt++];
+	while (1){
+		if ((getJong = (jongf->find(jongTok))) != '?'){
+			if (totalTok[jongCnt] == '\0'){
+				//getCho + getJung + getJong 반환
+			}
+			else
+				goto JONGCHECK;
+		}
+		else if ((getJong = (jongf->find(jongTok))) == '?'){
+			if (totalTok[jongCnt] == '\0'){
+				jongTok = '\0';
+				goto JUNGCHECK;
+			}
+			else
+				JONGCHECK:
+				jongTok += '&' + totalTok[jongCnt++];
+		}
+	}
+
+
+
+
+
+
 	//초성
 	if ((cho == false))
 	{
@@ -786,7 +897,6 @@ void CInputWnd::getKorean(CString scode)
 	jungFile.Close();
 	jongFile.Close();
 }
-
 
 CString CInputWnd::mergeJaso(CString choSung, CString jungSung, CString jongSung)
 {
