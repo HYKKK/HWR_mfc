@@ -53,6 +53,10 @@ public:
 	CString jungCode;
 	CString jongCode;
 
+	CString chof;
+	CString jungf;
+	CString jongf;
+
 	CString m_SCode;
 	CString lastS;
 	CString m_InputDetail;
@@ -73,6 +77,7 @@ public:
 	bool preventDupJong(CString ); 
 	bool preventDupJung(CString ); 
 	int makeJShape(CString);
+	void MakeDB(CString);
 	void clear(void);
 	void inputScodeToCho(void);
 	void inputScodeToJung(void);
