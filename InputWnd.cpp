@@ -8,7 +8,6 @@
 #include "stdafx.h"
 #include "WriteDown.h"
 #include "InputWnd.h"
-#include "Hanguel.h"
 
 using namespace std;
 
@@ -52,10 +51,11 @@ CInputWnd::CInputWnd()
 	bTmp = false;
 	bTmp2 = false;
 	rb = 0;
-
+	
 	MakeDB(chof);
 	MakeDB(jungf);
 	MakeDB(jongf);
+	
 }
 
 CInputWnd::~CInputWnd()
@@ -220,8 +220,6 @@ void CInputWnd::OnPaint()
 	CPoint * Point;
 	CRect rect;
 	CPen pen, *oldPen;
-
-
 
 }
 
@@ -389,71 +387,127 @@ CString CInputWnd::Simplification(CString src)
 
 	return m_SCode;
 }
-Cho *chomap = new Cho();
-Jung *jungmap = new Jung();
-Jong *jongmap = new Jong();
-
-
 
 //좌표 DB를 받아 Simple code로 변환후 기존 DB에 저장하는 함수
 void CInputWnd::MakeDB(CString str)
 {
 	CString c;
 	char * remain;
-	char * abuf;
+	char * abuf = NULL;
 	char * chbuf;
-	char * dbuf;
+	char * dbuf = NULL;
 	CString dstr;
 	CString sc;
-	int endX,endY,d;
+	int endX, endY, initX, initY, d;
+	UINT fsize;
 	CStdioFile f;
 	CFileStatus fs;
 
-	f.Open(str, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL);
-	if (f.GetStatus(fs) && fs.m_size > 0)
+	if (f.Open(str, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))
 	{
-		PCHAR buf = new CHAR[fs.m_size + 10];
-		if (buf != NULL)
-		{
-			for (int i = 0; i < fs.m_size;)
-				i += f.Read((PVOID)&buf[i], fs.m_size);
-			buf[fs.m_size] = NULL;
-			abuf = buf;
-		}
+		fsize = (UINT)f.GetLength();
+		char * buf = new CHAR[fsize + 1];
+		f.Read(buf, fsize);
+		abuf = buf;
 	}
-	do{
-		c = strtok_s(abuf, " ", &remain);
-		chbuf = strtok_s(NULL, "\n", &remain);
-		endX = (int)strtok_s(chbuf, " (,", &remain);
-		endY = (int)strtok_s(NULL, ")", &remain);
-		do{
-			d = EvalDirection((int)strtok_s(NULL, " (,", &remain) - endX,
-				(int)strtok_s(NULL, ")", &remain) - endY);
-			endX = (int)strtok_s(NULL, " (,", &remain);
-			endY = (int)strtok_s(NULL, ")", &remain);
-			dbuf += d;
-		} while (remain != NULL);
-		f.Close();
-		dstr = dbuf;
-		sc = Simplification(dstr);
-		if (str == "Cho.txt"){
-		f.Open(_T("chosung.txt"), CFile::modeWrite | CFile::typeText);
-		f.WriteString((c + sc));
-		f.Close();
-		}
-		else if (str == "Jung.txt"){
-			f.Open(_T("jungsung.txt"), CFile::modeWrite | CFile::typeText);
-			f.WriteString((c + sc));
-			f.Close();
-		}
-		else if (str == "Jong.txt"){
-			f.Open(_T("jongsung.txt"), CFile::modeWrite | CFile::typeText);
-			f.WriteString((c + sc));
-			f.Close();
-		}
-	} while (remain != NULL);
 	
+	c = strtok_s(abuf, " ", &remain);
+	chbuf = strtok_s(NULL, "\n", &remain);
+	endX = (int)strtok_s(chbuf, " (,", &remain);
+	endY = (int)strtok_s(NULL, ")", &remain);
+	while (&remain != NULL){
+		d = EvalDirection((initX = (int)strtok_s(NULL, " (,", &remain)) - endX,
+			(initY = (int)strtok_s(NULL, ")", &remain)) - endY);
+		endX = initX;
+		endY = initY;
+		dbuf += d;
+	}
+	f.Close();
+	dstr = dbuf;
+	sc = Simplification(dstr);
+	if (str == "Cho.txt"){
+		f.Open(_T("chosung.txt"), CFile::modeWrite | CFile::typeText);
+		f.WriteString((c + "|" + sc));
+		f.Close();
+	}
+	else if (str == "Jung.txt"){
+		f.Open(_T("jungsung.txt"), CFile::modeWrite | CFile::typeText);
+		f.WriteString((c + "|" + sc));
+		f.Close();
+	}
+	else if (str == "Jong.txt"){
+		f.Open(_T("jongsung.txt"), CFile::modeWrite | CFile::typeText);
+		f.WriteString((c + "|" + sc));
+		f.Close();
+	}
 }
+
+//
+////좌표 DB를 받아 Simple code로 변환후 기존 DB에 저장하는 함수
+//void CInputWnd::MakeDB(CString str)
+//{
+//	CString c;
+//	char * remain;
+//	char * abuf;
+//	char * chbuf;
+//	char * dbuf;
+//	CString dstr;
+//	CString sc;
+//	int endX,endY,d;
+//	CStdioFile f;
+//	CFileStatus fs;
+//
+//	f.Open(str, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL);
+//	if (f.GetStatus(fs) && fs.m_size > 0)
+//	{
+//		PCHAR buf = new CHAR[fs.m_size + 10];
+//		if (buf != NULL)
+//		{
+//			for (int i = 0; i < fs.m_size;)
+//				i += f.Read((PVOID)&buf[i], fs.m_size);
+//			buf[fs.m_size] = NULL;
+//			abuf = buf;
+//		}
+//	}
+//	do{
+//		c = strtok_s(abuf, " ", &remain);
+//		chbuf = strtok_s(NULL, "\n", &remain);
+//		endX = (int)strtok_s(chbuf, " (,", &remain);
+//		endY = (int)strtok_s(NULL, ")", &remain);
+//		do{
+//			d = EvalDirection((int)strtok_s(NULL, " (,", &remain) - endX,
+//				(int)strtok_s(NULL, ")", &remain) - endY);
+//			endX = (int)strtok_s(NULL, " (,", &remain);
+//			endY = (int)strtok_s(NULL, ")", &remain);
+//			dbuf += d;
+//		} while (remain != NULL);
+//		f.Close();
+//		dstr = dbuf;
+//		sc = Simplification(dstr);
+//		if (str == "Cho.txt"){
+//		f.Open(_T("chosung.txt"), CFile::modeWrite | CFile::typeText);
+//		f.WriteString((c + sc));
+//		f.Close();
+//		}
+//		else if (str == "Jung.txt"){
+//			f.Open(_T("jungsung.txt"), CFile::modeWrite | CFile::typeText);
+//			f.WriteString((c + sc));
+//			f.Close();
+//		}
+//		else if (str == "Jong.txt"){
+//			f.Open(_T("jongsung.txt"), CFile::modeWrite | CFile::typeText);
+//			f.WriteString((c + sc));
+//			f.Close();
+//		}
+//	} while (remain != NULL);
+//	
+//}
+
+#ifndef HANGUEL_CLASS
+Cho *chomap = new Cho();
+Jung *jungmap = new Jung();
+Jong *jongmap = new Jong();
+#endif
 
 void CInputWnd::getKorean(CString scode) {
 
@@ -613,7 +667,7 @@ void CInputWnd::getKorean(CString scode) {
 	//return mergeJaso();
 	*/
 }
-
+/* 
 // TODO 따로 class 생성하여 모듈화하고 정리
 void CInputWnd::getKorean_old(CString scode)
 {
@@ -661,9 +715,6 @@ void CInputWnd::getKorean_old(CString scode)
 	}
 
 
-
-	
-
 	//초성
 	if ((cho == false))
 	{
@@ -682,7 +733,7 @@ void CInputWnd::getKorean_old(CString scode)
 					{
 						if (choTmp == "ㄱ"&&exCode == "7")//'근'과 'ㄹ'을 구분하기 위한 조건문
 						{
-							if (endX > (pmX + 10))//'근'으로 판정
+							if (endX >(pmX + 10))//'근'으로 판정
 							{
 								cho = true;
 								bTmp = false;
@@ -972,21 +1023,7 @@ void CInputWnd::getKorean_old(CString scode)
 
 
 				}
-				/*
-				else if(jungTmp == "ㅜ"&&(((initY+endY)/2)+10>pmY)&&endX>pmX)
-				{
-				jungTmp = "ㅜ";
-				jungCode = "7&5";
-				jung = true;
-
-				jongCode = codeBuf;
-				jongTmp=chBuf;
-
-
-				bTmp2=false;
-				break;
-				}
-				*/
+			
 			}
 
 			else
@@ -1022,6 +1059,7 @@ void CInputWnd::getKorean_old(CString scode)
 	jungFile.Close();
 	jongFile.Close();
 }
+*/
 
 CString CInputWnd::mergeJaso(CString choSung, CString jungSung, CString jongSung)
 {
