@@ -4,14 +4,13 @@
 #include <iterator>
 #include <regex>
 
-#include <unordered_map>
+#include <map>
 #include "stdafx.h"
 
-#define KOREAN	std::unordered_map<SCode, HanGuel> 
-#define HANGUEL std::pair<SCode, HanGuel>
+#define KOREAN	std::map<SCode, HanGuel> 
 
-typedef LPCTSTR HanGuel;
-typedef LPCTSTR SCode;
+typedef CString HanGuel;
+typedef CString SCode;
 
 #define FILE_CHO		"chosung.txt"
 #define FILE_JUNG		"jungsung.txt"
@@ -26,19 +25,19 @@ typedef LPCTSTR SCode;
 static CString buf;
 class Korean {
 
-protected :
+protected:
 	KOREAN map;
 	CStdioFile file;
-public : 
+public:
 	virtual void training(CString FILENAME) {
 		CString hanguel;
 		CString scode;
 
-		if (!file.Open(FILENAME, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL)) {//  기존 파일을 읽기 모드 | 다른 프로세스에서의 접근(읽기, 쓰기를 못하게 함)
+		if (0 == file.Open(FILENAME, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL)) {//  기존 파일을 읽기 모드 | 다른 프로세스에서의 접근(읽기, 쓰기를 못하게 함)
 			AfxMessageBox(FILENAME + " OPEN ERROR!");
 			return;
 		}
-	
+
 		while (file.ReadString(buf)) {
 			AfxExtractSubString(hanguel, buf, 0, '|');
 			AfxExtractSubString(scode, buf, 1, '|');
@@ -49,43 +48,46 @@ public :
 	//TODO duplicate 처리
 	// if option == 1 db.file insert else if option = 0, just insert map
 	virtual void registerHanguel(SCode scode, HanGuel hanguel, int option) {
-		map.insert( KOREAN::value_type(scode, hanguel));
+		map.insert(KOREAN::value_type(scode, hanguel));
+		//map.insert(std::make_pair(scode, hanguel));
 		if (option)  {
 			file.SeekToEnd();
 			file.WriteString("\n" + (CString)hanguel + "|" + scode);
 		}
 	}
-	virtual HanGuel find(SCode scode) {
+	HanGuel find(SCode scode) {
 		KOREAN::iterator iter = map.find(scode);
 
 		if (iter == map.end())
-			iter->second = QUESTION_MARK;
+			return QUESTION_MARK;
 
 		return iter->second;
 	}
 };
 
-class Cho : protected Korean {
-private : 
-	
-public :
+class Cho : public Korean {
+private:
+
+public:
 	//open file and fill map
-	Cho() {	
+	Cho() {
 		training(FILE_CHO);
 	}
 
 	//학습. map에 추가. need test
 	void registerHanguel(SCode scode, HanGuel hanguel) {
-		if (!std::regex_match((std::string)hanguel, (std::regex) (REGULAR_CHO)))
+		if (!std::regex_match((std::string)hanguel, (std::regex) (REGULAR_CHO)) || scode == _T(""))
 			//cannot register
-			return ;
+			return;
 
-		this->registerHanguel(scode, hanguel);
+		Korean::registerHanguel(scode, hanguel, 1);
 	}
-	HanGuel find(const SCode& scode);
+	HanGuel find(const SCode& scode){
+		return Korean::find(scode);
+	}
 
 	~Cho() {
-		
+
 	}
 };
 
@@ -98,8 +100,12 @@ public:
 	}
 
 	//학습. map에 추가
-	void registerHanguel(SCode scode, HanGuel hanguel);
-	HanGuel find(const SCode& scode);
+	void registerHanguel(SCode scode, HanGuel hanguel){
+		Korean::registerHanguel(scode, hanguel, 1);
+	}
+	HanGuel find(const SCode& scode) {
+		return Korean::find(scode);
+	}
 
 	~Jung() {
 	}
@@ -109,12 +115,16 @@ class Jong : protected Korean {
 public:
 	//open file and fill map
 	Jong() {
-		training(FILE_JUNG);
+		training(FILE_JONG);
 	}
 
 	//학습. map에 추가
-	void registerHanguel(SCode scode, HanGuel hanguel);
-	HanGuel find(const SCode& scode);
+	void registerHanguel(SCode scode, HanGuel hanguel){
+		Korean::registerHanguel(scode, hanguel, 1);
+	}
+	HanGuel find(const SCode& scode) {
+		return Korean::find(scode);
+	}
 
 	~Jong() {
 

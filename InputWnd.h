@@ -6,6 +6,7 @@
 #endif // _MSC_VER > 1000
 
 #include "ObPoint.h"
+#include "Hanguel.h"
 
 // InputWnd.h : header file
 //
@@ -78,6 +79,9 @@ public:
 	void inputScodeToJong(void);
 	void Clear(void);
 	void getKorean(CString);
+	/*deprecated*/
+	void getKorean_old(CString);
+
 	CString mergeJaso(CString,CString,CString);
 	CString Simplification(CString src);
 	char EvalDirection(int dx, int dy, char prev = NULL);

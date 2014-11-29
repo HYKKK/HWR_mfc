@@ -182,7 +182,7 @@ void CInputWnd::OnMouseMove(UINT nFlags, CPoint point)
 		int dy = point.y - m_PrevInputPoint.y;
 
 		// 두 점사이의 간격이 일정값 이상일때 데이터에 추가함
-		if (dx * dx + dy * dy > 40){
+		if (dx * dx + dy * dy > 80){
 
 			// 입력 데이터 추가
 			m_PrevInputDir = EvalDirection(dx, dy, m_PrevInputDir);
@@ -382,9 +382,182 @@ CString CInputWnd::Simplification(CString src)
 
 	return m_SCode;
 }
+Cho *chof = new Cho();
+Jung *jungf = new Jung();
+Jong *jongf = new Jong();
 
+void CInputWnd::getKorean(CString scode) {
+
+	CString token;
+	CString cho;
+	CString jung;
+	CString jong;
+
+	CString result;
+
+	int i;
+	int j;
+	int scode_len = scode.GetLength();
+
+	i = 1;
+	cho = QUESTION_MARK;
+	jung = QUESTION_MARK;
+	jong = QUESTION_MARK;
+	result = QUESTION_MARK;
+
+	while(i <= scode_len) {
+		/*cho*/
+		token = scode.Mid(0, i);
+		
+		if ((cho = chof->find(token)) != QUESTION_MARK) {
+			if(i == scode_len) result = cho;
+			for (j = 1; j < scode_len; j++) {
+				token = scode.Mid(i+1, j);
+
+				if ((jung = jungf->find(token)) != QUESTION_MARK) {
+					if (i+j == scode_len-1){
+						result = mergeJaso(cho, jung, QUESTION_MARK);
+						break;
+					}
+						
+					
+					token = scode.Mid(i+j+2, scode_len);
+
+					if ((jong = jongf->find(token)) != QUESTION_MARK) {
+						result = mergeJaso(cho, jung, jong);
+						i = scode_len;
+						break;
+					}
+						
+				}
+			}
+		}
+
+		i++;
+	}
+	m_pPatternEdit1->SetWindowTextA(result);
+	/*
+	if ((cho == true || bTmp == true) && jungTmp == "")
+		m_pPatternEdit1->SetWindowText(choTmp);
+	else
+	{
+		if ((choTmp == "?") || (jungTmp == "?") || (jongTmp == "?"))
+			result = "?";
+		else
+			result = mergeJaso(choTmp, jungTmp, jongTmp);
+
+		m_pPatternEdit1->SetWindowText(result);
+	}
+	*/
+	/*  
+	//scode로 글자 찾는 함수
+	Cho *chof = new Cho();
+	Jung *jungf = new Jung();
+	Jong *jongf = new Jong();
+
+	CString totalTok[50];
+	CString choTok;
+	CString jungTok;
+	CString jongTok;
+	CString getCho;
+	CString getJung;
+	CString getJong;
+
+	int choCnt = 0;
+	int jungCnt = 0;
+	int jongCnt = 0;
+	int i = 0;
+
+	
+	  
+	//scode 잘라서 totalTok에 저장
+	while (AfxExtractSubString(totalTok[i++], scode, i++, '&') != NULL);
+
+	//초성 확인
+	choTok += totalTok[choCnt++];
+	while (1){
+		if ((getCho = (chof->find(choTok))) != '?'){
+			if (totalTok[choCnt] == '\0'){
+				//getCho 반환
+			}
+			else
+				break;
+		}
+		else if ((getCho = (chof->find(choTok))) == '?'){
+			if (totalTok[choCnt] == '\0'){
+
+				goto TOTALJUNGCHECK;
+			}
+			else
+			CHOCHECK:
+			choTok += '&' + totalTok[choCnt++];
+		}
+	}	
+
+	//중성 확인
+	jungCnt = choCnt;
+	jungTok += totalTok[jungCnt++];
+	while (1){
+		if ((getJung = (jungf->find(jungTok))) != '?'){
+			if (totalTok[jungCnt] == '\0'){
+				//getCho + getJung 반환
+			}
+			else
+				break;
+		}
+		else if ((getJung = (jungf->find(jungTok))) == '?'){
+			if (totalTok[jungCnt] == '\0'){
+				jungTok = '\0';
+				goto CHOCHECK;
+			}
+			else
+			JUNGCHECK:
+			jungTok += '&' + totalTok[jungCnt++];
+		}
+	}
+
+	//마지막에 중성 또는 ? 확인
+TOTALJUNGCHECK:
+	if (jungTok == '\0'){
+		if (((jungTok = jungf->find(scode))) != '\0'){
+			//jungTok 반환
+			//TODO
+		}
+		else if (((jungTok = jungf->find(scode))) != '\0'){
+			//'?' 반환
+			//TODO
+		}
+
+
+	}
+
+	//종성 확인
+	jongCnt = jungCnt;
+	jongTok += totalTok[jongCnt++];
+	while (1){
+		if ((getJong = (jongf->find(jongTok))) != '?'){
+			if (totalTok[jongCnt] == '\0'){
+				//getCho + getJung + getJong 반환
+			}
+			else
+				goto JONGCHECK;
+		}
+		else if ((getJong = (jongf->find(jongTok))) == '?'){
+			if (totalTok[jongCnt] == '\0'){
+				jongTok = '\0';
+				goto JUNGCHECK;
+			}
+			else
+			JONGCHECK:
+			jongTok += '&' + totalTok[jongCnt++];
+		}
+	}
+
+	//return mergeJaso();
+	*/
+}
 // TODO 따로 class 생성하여 모듈화하고 정리
-void CInputWnd::getKorean(CString scode)
+void CInputWnd::getKorean_old(CString scode)
 {
 	CString conting = "ㄱㄷㅂㅅㅈㄴ";
 	CString lConting[5] = { "ㄲ", "ㄸ", "ㅃ", "ㅆ", "ㅉ" };
@@ -431,113 +604,7 @@ void CInputWnd::getKorean(CString scode)
 
 
 
-
-
-
-
-	//scode로 글자 찾는 함수
-	Cho *chof = new Cho();
-	Jung *jungf = new Jung();
-	Jong *jongf = new Jong();
-
-	CString totalTok[50];
-	CString choTok;
-	CString jungTok;
-	CString jongTok;
-	CString getCho;
-	CString getJung;
-	CString getJong;
-
-	int choCnt = 0;
-	int jungCnt = 0;
-	int jongCnt = 0;
-	int i = 0;
-
-	//scode 잘라서 totalTok에 저장
-	while (AfxExtractSubString(totalTok[i++], scode, i++, '&') != NULL);
 	
-	//초성 확인
-	choTok += totalTok[choCnt++];
-	while (1){
-		if ((getCho = (chof->find(choTok))) != '?'){
-			if (totalTok[choCnt] == '\0'){
-				//getCho 반환
-			}
-			else
-				break;
-		}
-		else if ((getCho = (chof->find(choTok))) == '?'){
-			if (totalTok[choCnt] == '\0'){
-
-				goto TOTALJUNGCHECK;
-			}
-			else
-			CHOCHECK:
-			choTok += '&' + totalTok[choCnt++];
-		}
-	}
-
-	//중성 확인
-	jungCnt = choCnt;
-	jungTok += totalTok[jungCnt++];
-	while (1){
-		if ((getJung = (jungf->find(jungTok))) != '?'){
-			if (totalTok[jungCnt] == '\0'){
-				//getCho + getJung 반환
-			}
-			else
-				break;
-		}
-		else if ((getJung = (jungf->find(jungTok))) == '?'){
-			if (totalTok[jungCnt] == '\0'){
-				jungTok = '\0';
-				goto CHOCHECK;
-			}
-			else
-				JUNGCHECK:
-				jungTok += '&' + totalTok[jungCnt++];
-		}
-	}
-
-	//마지막에 중성 또는 ? 확인
-	TOTALJUNGCHECK:
-	if (jungTok == '\0'){
-		if (((jungTok = jungf->find(scode))) != '\0'){
-			//jungTok 반환
-		}
-		else if (((jungTok = jungf->find(scode))) != '\0'){
-			//'?' 반환
-		}
-
-
-	}
-
-	//종성 확인
-	jongCnt = jungCnt;
-	jongTok += totalTok[jongCnt++];
-	while (1){
-		if ((getJong = (jongf->find(jongTok))) != '?'){
-			if (totalTok[jongCnt] == '\0'){
-				//getCho + getJung + getJong 반환
-			}
-			else
-				goto JONGCHECK;
-		}
-		else if ((getJong = (jongf->find(jongTok))) == '?'){
-			if (totalTok[jongCnt] == '\0'){
-				jongTok = '\0';
-				goto JUNGCHECK;
-			}
-			else
-				JONGCHECK:
-				jongTok += '&' + totalTok[jongCnt++];
-		}
-	}
-
-
-
-
-
 
 	//초성
 	if ((cho == false))
@@ -910,7 +977,7 @@ CString CInputWnd::mergeJaso(CString choSung, CString jungSung, CString jongSung
 
 	ChoSungPosition = ChoSungTbl.Find(choSung) / 2;     // 초성 위치
 	JungSungPosition = JungSungTbl.Find(jungSung) / 2;   // 중성 위치
-	JongSungPosition = JongSungTbl.Find(jongSung) / 2;   // 종성 위치
+	JongSungPosition = (jongSung != QUESTION_MARK)? JongSungTbl.Find(jongSung) / 2 : 0;   // 종성 위치
 
 
 	// 앞서 만들어 낸 계산식
