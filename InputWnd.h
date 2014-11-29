@@ -45,6 +45,10 @@ public:
 	bool bTmp;
 	bool bTmp2;
 	
+	Cho *chomap = new Cho();
+	Jung *jungmap = new Jung();
+	Jong *jongmap = new Jong();
+
 	CString choTmp;
 	CString jungTmp;
 	CString jongTmp;
@@ -89,7 +93,7 @@ public:
 
 	CString mergeJaso(CString,CString,CString);
 	CString Simplification(CString src);
-	char EvalDirection(int dx, int dy, char prev = NULL);
+	char EvalDirection(int dx, int dy);
 	virtual ~CInputWnd();
 
 	// Generated message map functions

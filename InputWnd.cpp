@@ -20,6 +20,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
+
 //asdasdasdasdasdas
 
 /////////////////////////////////////////////////////////////////////////////
@@ -41,9 +42,9 @@ CInputWnd::CInputWnd()
 	jungCode = _T("");
 	jongCode = _T("");
 
-	chof = _T("Cho.txt");
-	jungf = _T("Jung.txt");
-	jongf = _T("Jong.txt");
+	chof = _T("cho.txt"); 
+	jungf = _T("jung.txt");
+	jongf = _T("jong.txt");
 
 	cho = false;
 	jung = false;
@@ -52,10 +53,12 @@ CInputWnd::CInputWnd()
 	bTmp2 = false;
 	rb = 0;
 	
+	//TODO uncomment : YJ
+	/*
 	MakeDB(chof);
 	MakeDB(jungf);
 	MakeDB(jongf);
-	
+	*/
 }
 
 CInputWnd::~CInputWnd()
@@ -122,8 +125,14 @@ void CInputWnd::OnLButtonDown(UINT nFlags, CPoint point)
 
 		m_Input += dir;
 
-		if ((m_InputDetail.GetLength()) > 0)
-			m_InputDetail += "-";
+		//TODO Youngjin simplecode [a-h]
+		if ((m_InputDetail.GetLength()) > 0){
+			//m_InputDetail += "-";
+			int dx = point.x - m_PrevInputPoint.x;
+			int dy = point.y - m_PrevInputPoint.y;
+			m_InputDetail += (char)(EvalDirection(dx, dy) - '0' + 'a' - 1);
+		}
+			
 
 		m_InputPoints.AddTail(pPoint);
 
@@ -192,7 +201,7 @@ void CInputWnd::OnMouseMove(UINT nFlags, CPoint point)
 		if (dx * dx + dy * dy > 80){
 
 			// 입력 데이터 추가
-			m_PrevInputDir = EvalDirection(dx, dy, m_PrevInputDir);
+			m_PrevInputDir = EvalDirection(dx, dy); //m_PrevInputDir
 			m_Input += m_PrevInputDir;
 			m_InputDetail += m_PrevInputDir;
 			m_InputPoints.AddTail(pPoint);
@@ -391,17 +400,16 @@ CString CInputWnd::Simplification(CString src)
 //좌표 DB를 받아 Simple code로 변환후 기존 DB에 저장하는 함수
 void CInputWnd::MakeDB(CString str)
 {
-	Cho *chof = new Cho();
-	Jung *jungf = new Jung();
-	Jong *jongf = new Jong();
 	SCode c;
 	char * remain;
 	char * abuf = NULL;
 	char * chbuf;
-	char * dbuf = NULL;
+
+	CString dbuf;
 	CString dstr;
 	HanGuel sc;
-	int endX, endY, initX, initY, d, i=0, option;
+	char d;
+	int endX, endY, initX, initY, i=0, option;
 	UINT fsize;
 	CStdioFile f;
 	CFileStatus fs;
@@ -416,106 +424,46 @@ void CInputWnd::MakeDB(CString str)
 	if (f.Open(str, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))
 	{
 		fsize = (UINT)f.GetLength();
-		char * buf = new CHAR[fsize + 1];
+		char * buf = new CHAR[fsize+1];
 		f.Read(buf, fsize);
+		buf[fsize] = 0;
 		abuf = buf;
 	}
 
-	c = (LPCTSTR)strtok_s(abuf, " ", &remain);
+	//TODO 한줄만읽어오는거 해결..
+	c = strtok_s(abuf, " ", &remain);
 	chbuf = strtok_s(NULL, "\n", &remain);
-	endX = (int)strtok_s(chbuf, " (,", &remain);
-	endY = (int)strtok_s(NULL, ")", &remain);
-	while (&remain != NULL){
-		d = EvalDirection((initX = (int)strtok_s(NULL, " (,", &remain)) - endX,
-			(initY = (int)strtok_s(NULL, ")", &remain)) - endY);
+
+	endX = atoi(strtok_s(chbuf, " (,", &remain));
+	endY = atoi(strtok_s(NULL, ")", &remain));
+	
+	//if (!std::regex_match((std::string)pbuf, (std::regex)"(\d,\d)") || pbuf == _T(""))
+	//return;
+	while (*remain != 0) {
+		initX = atoi(strtok_s(NULL, " (,", &remain));
+		initY = atoi(strtok_s(NULL, ")", &remain));
+		d = EvalDirection(initX - endX, initY - endY);
 		endX = initX;
 		endY = initY;
 		dbuf += d;
-		dstr = dbuf;
-		sc = (LPCTSTR)Simplification(dstr);
-
-		switch (option)
-		{
-		case 1:
-			chof->registerHanguel(c, sc);
-			break;
-		case 2:
-			jungf->registerHanguel(c, sc);
-			break;
-		case 3:
-			jongf->registerHanguel(c, sc);
-			break;
-		}
 	}
+	sc = Simplification(dbuf);
+
+	switch (option)
+	{
+	case 1:
+		chomap->registerHanguel(c, sc);
+		break;
+	case 2:
+		jungmap->registerHanguel(c, sc);
+		break;
+	case 3:
+		jongmap->registerHanguel(c, sc);
+		break;
+	}
+	
 	f.Close();
 }
-
-//
-////좌표 DB를 받아 Simple code로 변환후 기존 DB에 저장하는 함수
-//void CInputWnd::MakeDB(CString str)
-//{
-//	CString c;
-//	char * remain;
-//	char * abuf;
-//	char * chbuf;
-//	char * dbuf;
-//	CString dstr;
-//	CString sc;
-//	int endX,endY,d;
-//	CStdioFile f;
-//	CFileStatus fs;
-//
-//	f.Open(str, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL);
-//	if (f.GetStatus(fs) && fs.m_size > 0)
-//	{
-//		PCHAR buf = new CHAR[fs.m_size + 10];
-//		if (buf != NULL)
-//		{
-//			for (int i = 0; i < fs.m_size;)
-//				i += f.Read((PVOID)&buf[i], fs.m_size);
-//			buf[fs.m_size] = NULL;
-//			abuf = buf;
-//		}
-//	}
-//	do{
-//		c = strtok_s(abuf, " ", &remain);
-//		chbuf = strtok_s(NULL, "\n", &remain);
-//		endX = (int)strtok_s(chbuf, " (,", &remain);
-//		endY = (int)strtok_s(NULL, ")", &remain);
-//		do{
-//			d = EvalDirection((int)strtok_s(NULL, " (,", &remain) - endX,
-//				(int)strtok_s(NULL, ")", &remain) - endY);
-//			endX = (int)strtok_s(NULL, " (,", &remain);
-//			endY = (int)strtok_s(NULL, ")", &remain);
-//			dbuf += d;
-//		} while (remain != NULL);
-//		f.Close();
-//		dstr = dbuf;
-//		sc = Simplification(dstr);
-//		if (str == "Cho.txt"){
-//		f.Open(_T("chosung.txt"), CFile::modeWrite | CFile::typeText);
-//		f.WriteString((c + sc));
-//		f.Close();
-//		}
-//		else if (str == "Jung.txt"){
-//			f.Open(_T("jungsung.txt"), CFile::modeWrite | CFile::typeText);
-//			f.WriteString((c + sc));
-//			f.Close();
-//		}
-//		else if (str == "Jong.txt"){
-//			f.Open(_T("jongsung.txt"), CFile::modeWrite | CFile::typeText);
-//			f.WriteString((c + sc));
-//			f.Close();
-//		}
-//	} while (remain != NULL);
-//	
-//}
-
-#ifndef HANGUEL_CLASS
-Cho *chomap = new Cho();
-Jung *jungmap = new Jung();
-Jong *jongmap = new Jong();
-#endif
 
 void CInputWnd::getKorean(CString scode) {
 
@@ -551,7 +499,6 @@ void CInputWnd::getKorean(CString scode) {
 						break;
 					}
 
-
 					token = scode.Mid(i + j + 2, scode_len);
 
 					if ((jong = jongmap->find(token)) != QUESTION_MARK) {
@@ -567,113 +514,7 @@ void CInputWnd::getKorean(CString scode) {
 		i++;
 	}
 	m_pPatternEdit1->SetWindowTextA(result);
-	/*
-	//scode로 글자 찾는 함수
-	Cho *chof = new Cho();
-	Jung *jungf = new Jung();
-	Jong *jongf = new Jong();
-
-	CString totalTok[50];
-	CString choTok;
-	CString jungTok;
-	CString jongTok;
-	CString getCho;
-	CString getJung;
-	CString getJong;
-
-	int choCnt = 0;
-	int jungCnt = 0;
-	int jongCnt = 0;
-	int i = 0;
-
-
-
-	//scode 잘라서 totalTok에 저장
-	while (AfxExtractSubString(totalTok[i++], scode, i++, '&') != NULL);
-
-	//초성 확인
-	choTok += totalTok[choCnt++];
-	while (1){
-	if ((getCho = (chof->find(choTok))) != '?'){
-	if (totalTok[choCnt] == '\0'){
-	//getCho 반환
-	}
-	else
-	break;
-	}
-	else if ((getCho = (chof->find(choTok))) == '?'){
-	if (totalTok[choCnt] == '\0'){
-
-	goto TOTALJUNGCHECK;
-	}
-	else
-	CHOCHECK:
-	choTok += '&' + totalTok[choCnt++];
-	}
-	}
-
-	//중성 확인
-	jungCnt = choCnt;
-	jungTok += totalTok[jungCnt++];
-	while (1){
-	if ((getJung = (jungf->find(jungTok))) != '?'){
-	if (totalTok[jungCnt] == '\0'){
-	//getCho + getJung 반환
-	}
-	else
-	break;
-	}
-	else if ((getJung = (jungf->find(jungTok))) == '?'){
-	if (totalTok[jungCnt] == '\0'){
-	jungTok = '\0';
-	goto CHOCHECK;
-	}
-	else
-	JUNGCHECK:
-	jungTok += '&' + totalTok[jungCnt++];
-	}
-	}
-
-	//마지막에 중성 또는 ? 확인
-	TOTALJUNGCHECK:
-	if (jungTok == '\0'){
-	if (((jungTok = jungf->find(scode))) != '\0'){
-	//jungTok 반환
-	//TODO
-	}
-	else if (((jungTok = jungf->find(scode))) != '\0'){
-	//'?' 반환
-	//TODO
-	}
-
-
-	}
-
-	<<<<<<< HEAD
-	//종성 확인
-	jongCnt = jungCnt;
-	jongTok += totalTok[jongCnt++];
-	while (1){
-	if ((getJong = (jongf->find(jongTok))) != '?'){
-	if (totalTok[jongCnt] == '\0'){
-	//getCho + getJung + getJong 반환
-	}
-	else
-	goto JONGCHECK;
-	}
-	else if ((getJong = (jongf->find(jongTok))) == '?'){
-	if (totalTok[jongCnt] == '\0'){
-	jongTok = '\0';
-	goto JUNGCHECK;
-	}
-	else
-	JONGCHECK:
-	jongTok += '&' + totalTok[jongCnt++];
-	}
-	}
-
-	//return mergeJaso();
-	*/
+	
 }
 /* 
 // TODO 따로 class 생성하여 모듈화하고 정리
@@ -1092,7 +933,7 @@ CString CInputWnd::mergeJaso(CString choSung, CString jungSung, CString jongSung
 	return ret;
 }
 
-char CInputWnd::EvalDirection(int dx, int dy, char prev)
+char CInputWnd::EvalDirection(int dx, int dy)
 {
 	float d;//기울기
 
