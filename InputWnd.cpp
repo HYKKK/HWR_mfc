@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <string>
-
+#include "Hanguel.h"
 #include "stdafx.h"
 #include "WriteDown.h"
 #include "InputWnd.h"
@@ -392,17 +392,27 @@ CString CInputWnd::Simplification(CString src)
 //좌표 DB를 받아 Simple code로 변환후 기존 DB에 저장하는 함수
 void CInputWnd::MakeDB(CString str)
 {
-	CString c;
+	Cho *chof = new Cho();
+	Jung *jungf = new Jung();
+	Jong *jongf = new Jong();
+	SCode c;
 	char * remain;
 	char * abuf = NULL;
 	char * chbuf;
 	char * dbuf = NULL;
 	CString dstr;
-	CString sc;
-	int endX, endY, initX, initY, d;
+	HanGuel sc;
+	int endX, endY, initX, initY, d, i=0, option;
 	UINT fsize;
 	CStdioFile f;
 	CFileStatus fs;
+
+	if (str == "cho.txt")
+		option = 1;
+	else if (str == "jung.txt")
+		option = 2;
+	else
+		option = 3;
 
 	if (f.Open(str, CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))
 	{
@@ -411,8 +421,8 @@ void CInputWnd::MakeDB(CString str)
 		f.Read(buf, fsize);
 		abuf = buf;
 	}
-	
-	c = strtok_s(abuf, " ", &remain);
+
+	c = (LPCTSTR)strtok_s(abuf, " ", &remain);
 	chbuf = strtok_s(NULL, "\n", &remain);
 	endX = (int)strtok_s(chbuf, " (,", &remain);
 	endY = (int)strtok_s(NULL, ")", &remain);
@@ -422,25 +432,23 @@ void CInputWnd::MakeDB(CString str)
 		endX = initX;
 		endY = initY;
 		dbuf += d;
+		dstr = dbuf;
+		sc = (LPCTSTR)Simplification(dstr);
+
+		switch (option)
+		{
+		case 1:
+			chof->registerHanguel(c, sc);
+			break;
+		case 2:
+			jungf->registerHanguel(c, sc);
+			break;
+		case 3:
+			jongf->registerHanguel(c, sc);
+			break;
+		}
 	}
 	f.Close();
-	dstr = dbuf;
-	sc = Simplification(dstr);
-	if (str == "Cho.txt"){
-		f.Open(_T("chosung.txt"), CFile::modeWrite | CFile::typeText);
-		f.WriteString((c + "|" + sc));
-		f.Close();
-	}
-	else if (str == "Jung.txt"){
-		f.Open(_T("jungsung.txt"), CFile::modeWrite | CFile::typeText);
-		f.WriteString((c + "|" + sc));
-		f.Close();
-	}
-	else if (str == "Jong.txt"){
-		f.Open(_T("jongsung.txt"), CFile::modeWrite | CFile::typeText);
-		f.WriteString((c + "|" + sc));
-		f.Close();
-	}
 }
 
 // TODO 따로 class 생성하여 모듈화하고 정리
