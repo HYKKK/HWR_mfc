@@ -322,19 +322,26 @@ CString CInputWnd::Simplification(CString src)
 		// 입력된 코드가 알파벳 a부터 h사이의 값일 경우 그대로 ret배열에 넣기
 		else if (sret[i] < 73 || sret[i] > 64)
 		{
-			if (cnt >= 3)
-			{
-				if (ret[j - 1] != ch)
-				{
-					ret[j] = ch;
-					j++;
-				}
-			}
 			lastS = "";
-			ret[j] = '&';
+			ret[j] = sret[i];
 			j++;
 			cnt = 1;
 		}
+		else if (sret[i] == '-')
+			{
+				if (cnt >= 3)
+				{
+					if (ret[j - 1] != ch)
+					{
+						ret[j] = ch;
+						j++;
+					}
+				}
+				lastS = "";
+				ret[j] = '&';
+				j++;
+				cnt = 1;
+			}
 
 		else if (sret[i] == '9')
 		{
