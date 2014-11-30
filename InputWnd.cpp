@@ -61,7 +61,7 @@ CInputWnd::~CInputWnd()
 {
 	CObPoint *pPoint;
 
-	// ¸Ş¸ğ¸® ÇØÁ¦
+	// ë©”ëª¨ë¦¬ í•´ì œ
 	for (int i = m_Points.GetCount(); i; i--)
 	{
 		pPoint = (CObPoint*)m_Points.GetTail();
@@ -85,7 +85,7 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CInputWnd message handlers
-// TODO ¸¶¿ì½º ¶¼¾úÀ» ¶§ ¹æÇâ¼º Ãß°¡
+// TODO ë§ˆìš°ìŠ¤ ë–¼ì—ˆì„ ë•Œ ë°©í–¥ì„± ì¶”ê°€
 void CInputWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	initX = point.x;
@@ -95,7 +95,7 @@ void CInputWnd::OnLButtonDown(UINT nFlags, CPoint point)
 
 
 	m_InputDetail += EvalDirection(endX - initX, endY - initY);
-	// Æ÷ÀÎÆ® Ãß°¡
+	// í¬ì¸íŠ¸ ì¶”ê°€
 
 	/*
 	CString str;
@@ -110,13 +110,13 @@ void CInputWnd::OnLButtonDown(UINT nFlags, CPoint point)
 
 	char dir;
 
-	// ÀÔ·ÂÀÌ °è¼Ó µÇ´Â °æ¿ì
+	// ì…ë ¥ì´ ê³„ì† ë˜ëŠ” ê²½ìš°
 	if (m_PrevInputPoint.x >= 0)
 	{
 		int dx = point.x - m_PrevInputPoint.x;
 		int dy = point.y - m_PrevInputPoint.y;
 
-		// ÀÔ·Â µ¥ÀÌÅÍ Ãß°¡ (°Å¸® ÃøÁ¤ ¾øÀ½)
+		// ì…ë ¥ ë°ì´í„° ì¶”ê°€ (ê±°ë¦¬ ì¸¡ì • ì—†ìŒ)
 		dir = EvalDirection(dx, dy);
 
 		m_Input += dir;
@@ -131,7 +131,7 @@ void CInputWnd::OnLButtonDown(UINT nFlags, CPoint point)
 
 
 
-		// ÀÔ·Â Æ÷ÀÎÆ® Âï±â
+		// ì…ë ¥ í¬ì¸íŠ¸ ì°ê¸°
 		CClientDC dc(this);
 		DrawInputPoint(dc);
 	}
@@ -151,8 +151,8 @@ void CInputWnd::OnLButtonUp(UINT nFlags, CPoint point)
 	Simplification(m_InputDetail);
 	m_pSCodeEdit->SetWindowText(m_SCode);
 
-	// TODO ¿©±â¿¡¼­ ¹æÇâ¼º Ãß°¡
-	// ²÷¾îÁø °ÍÀ» ³ªÅ¸³»´Â Æ÷ÀÎÆ® Ãß°¡
+	// TODO ì—¬ê¸°ì—ì„œ ë°©í–¥ì„± ì¶”ê°€
+	// ëŠì–´ì§„ ê²ƒì„ ë‚˜íƒ€ë‚´ëŠ” í¬ì¸íŠ¸ ì¶”ê°€
 	CObPoint* pPoint = new CObPoint(-1, -1);
 	m_Points.AddTail(pPoint);
 
@@ -169,28 +169,28 @@ void CInputWnd::OnMouseMove(UINT nFlags, CPoint point)
 		CPen pen, *oldPen;
 		CObPoint* pPoint;
 
-		// Ææ ¼±ÅÃ
+		// íœ ì„ íƒ
 		pen.CreatePen(PS_SOLID, 2, RGB(0, 0, 0xFF));
 		oldPen = (CPen*)dc.SelectObject(&pen);
 
-		// ¹Ù·Î Àü Æ÷ÀÎÆ®
+		// ë°”ë¡œ ì „ í¬ì¸íŠ¸
 		pPoint = (CObPoint*)m_Points.GetTail();
 
-		// ¼± ±×¸®±â
+		// ì„  ê·¸ë¦¬ê¸°
 		dc.MoveTo(pPoint->x, pPoint->y);
 		dc.LineTo(point.x, point.y);
 
-		// Æ÷ÀÎÆ® Ãß°¡
+		// í¬ì¸íŠ¸ ì¶”ê°€
 		pPoint = new CObPoint(point.x, point.y);
 		m_Points.AddTail(pPoint);
 
 		int dx = point.x - m_PrevInputPoint.x;
 		int dy = point.y - m_PrevInputPoint.y;
 
-		// µÎ Á¡»çÀÌÀÇ °£°İÀÌ ÀÏÁ¤°ª ÀÌ»óÀÏ¶§ µ¥ÀÌÅÍ¿¡ Ãß°¡ÇÔ
+		// ë‘ ì ì‚¬ì´ì˜ ê°„ê²©ì´ ì¼ì •ê°’ ì´ìƒì¼ë•Œ ë°ì´í„°ì— ì¶”ê°€í•¨
 		if (dx * dx + dy * dy > 40){
 
-			// ÀÔ·Â µ¥ÀÌÅÍ Ãß°¡
+			// ì…ë ¥ ë°ì´í„° ì¶”ê°€
 			m_PrevInputDir = EvalDirection(dx, dy, m_PrevInputDir);
 			m_Input += m_PrevInputDir;
 			m_InputDetail += m_PrevInputDir;
@@ -204,7 +204,7 @@ void CInputWnd::OnMouseMove(UINT nFlags, CPoint point)
 		dc.SelectObject(oldPen);
 		pen.DeleteObject();
 
-		// ÀÔ·Â Æ÷ÀÎÆ® Âï±â
+		// ì…ë ¥ í¬ì¸íŠ¸ ì°ê¸°
 		DrawInputPoint(dc);
 	}
 
@@ -224,12 +224,12 @@ void CInputWnd::OnPaint()
 
 }
 
-// TODO & -> ¸¶¿ì½º¸¦ ¶¼¾úÀ» ¶§ÀÇ ¹æÇâ
+// TODO & -> ë§ˆìš°ìŠ¤ë¥¼ ë–¼ì—ˆì„ ë•Œì˜ ë°©í–¥
 CString CInputWnd::Simplification(CString src)
 {
 	char* ssrc = (LPSTR)(LPCTSTR)src;
 
-	char* buffer = new char[strlen(ssrc) + 1];//ÅäÅ©³ªÀÌÁîÇÏ¸é ¿øº»ÀÌ º¸Á¸µÇÁö ¾Ê±â ¶§¹®¿¡ ¹öÆÛ»ı¼º
+	char* buffer = new char[strlen(ssrc) + 1];//í† í¬ë‚˜ì´ì¦ˆí•˜ë©´ ì›ë³¸ì´ ë³´ì¡´ë˜ì§€ ì•Šê¸° ë•Œë¬¸ì— ë²„í¼ìƒì„±
 	memset(buffer, NULL, strlen(ssrc) + 1);
 	strcpy(buffer, ssrc);
 
@@ -238,13 +238,13 @@ CString CInputWnd::Simplification(CString src)
 	char* tok = NULL;
 
 	char* ret = new char[strlen(ssrc)];
-	memset(ret, NULL, strlen(ssrc)); // ÁÙÀÏ°Å
+	memset(ret, NULL, strlen(ssrc)); // ì¤„ì¼ê±°
 
 
 
 
 
-	//'¤·'ÀÎÁö ÆÇº°ÇØ¼­ 9·Î ¹Ù²Û´Ù.
+	//'ã…‡'ì¸ì§€ íŒë³„í•´ì„œ 9ë¡œ ë°”ê¾¼ë‹¤.
 
 	tok = strtok(buffer, "-");
 	while (1)
@@ -303,7 +303,7 @@ CString CInputWnd::Simplification(CString src)
 	}
 
 
-	unsigned int cnt = 1, j = 0;   // j´Â ret index
+	unsigned int cnt = 1, j = 0;   // jëŠ” ret index
 	char ch;
 
 	for (unsigned int i = 0; i < strlen(sret); i++){
@@ -319,8 +319,8 @@ CString CInputWnd::Simplification(CString src)
 				cnt = 1;
 			}
 		}
-
-		else if (sret[i] == '-')
+		// ì…ë ¥ëœ ì½”ë“œê°€ ì•ŒíŒŒë²³ aë¶€í„° hì‚¬ì´ì˜ ê°’ì¼ ê²½ìš° ê·¸ëŒ€ë¡œ retë°°ì—´ì— ë„£ê¸°
+		else if (sret[i] < 73 || sret[i] > 64)
 		{
 			if (cnt >= 3)
 			{
@@ -389,7 +389,7 @@ CString CInputWnd::Simplification(CString src)
 	return m_SCode;
 }
 
-//ÁÂÇ¥ DB¸¦ ¹Ş¾Æ Simple code·Î º¯È¯ÈÄ ±âÁ¸ DB¿¡ ÀúÀåÇÏ´Â ÇÔ¼ö
+//ì¢Œí‘œ DBë¥¼ ë°›ì•„ Simple codeë¡œ ë³€í™˜í›„ ê¸°ì¡´ DBì— ì €ì¥í•˜ëŠ” í•¨ìˆ˜
 void CInputWnd::MakeDB(CString str)
 {
 	Cho *chof = new Cho();
@@ -398,7 +398,7 @@ void CInputWnd::MakeDB(CString str)
 	SCode c;
 	char * remain;
 	char * abuf = NULL;
-	char * chbuf;
+	char ** chbuf;
 	char * dbuf = NULL;
 	CString dstr;
 	HanGuel sc;
@@ -422,9 +422,11 @@ void CInputWnd::MakeDB(CString str)
 		abuf = buf;
 	}
 
+	//TODO í•œì¤„ë§Œì½ì–´ì˜¤ëŠ”ê±° í•´ê²°..
+	for (int i = 0; abuf != NULL; i++){ //abufë¥¼ í•œê¸€ìì˜ ë°ì´í„°ë§Œ ì˜ë¼ì„œ chbufì— ë„£ê³  chbufì— ë”°ë¥¸ simplecode ì¶”ì¶œí•˜ì—¬ mapì— ì €ì¥
 	c = (LPCTSTR)strtok_s(abuf, " ", &remain);
-	chbuf = strtok_s(NULL, "\n", &remain);
-	endX = (int)strtok_s(chbuf, " (,", &remain);
+	chbuf[i] = strtok_s(NULL, "\n", &remain);
+	endX = (int)strtok_s(chbuf[i], " (,", &remain);
 	endY = (int)strtok_s(NULL, ")", &remain);
 	while (&remain != NULL){
 		d = EvalDirection((initX = (int)strtok_s(NULL, " (,", &remain)) - endX,
@@ -448,56 +450,57 @@ void CInputWnd::MakeDB(CString str)
 			break;
 		}
 	}
+	}
 	f.Close();
 }
 
-// TODO µû·Î class »ı¼ºÇÏ¿© ¸ğµâÈ­ÇÏ°í Á¤¸®
+// TODO ë”°ë¡œ class ìƒì„±í•˜ì—¬ ëª¨ë“ˆí™”í•˜ê³  ì •ë¦¬
 void CInputWnd::getKorean(CString scode)
 {
-	CString conting = "¤¡¤§¤²¤µ¤¸¤¤";
-	CString lConting[5] = { "¤¢", "¤¨", "¤³", "¤¶", "¤¹" };
+	CString conting = "ã„±ã„·ã…‚ã……ã…ˆã„´";
+	CString lConting[5] = { "ã„²", "ã„¸", "ã…ƒ", "ã…†", "ã…‰" };
 	CString buf;
 	CString chBuf;
 	CString codeBuf;
-	CString jBuf;//Áß¼ºÀÇ ÇüÅÂ¸¦ ±¸ºĞÇÏ±â À§ÇÑ °ªÀ» ÀúÀåÇÒ ¹öÆÛ
-	int jShape; //¼ıÀÚ·Î Ç¥ÇöµÈ Áß¼ºÀÇ ÇüÅÂ 
+	CString jBuf;//ì¤‘ì„±ì˜ í˜•íƒœë¥¼ êµ¬ë¶„í•˜ê¸° ìœ„í•œ ê°’ì„ ì €ì¥í•  ë²„í¼
+	int jShape; //ìˆ«ìë¡œ í‘œí˜„ëœ ì¤‘ì„±ì˜ í˜•íƒœ 
 
 	CString result = _T("");
-	CString exCode = _T("");//ÀÎ½ÄµÈ ÃÊ¼º¹®ÀÚÄÚµå¸¦ Á¦¿ÜÇÑ Á¤±ÔÈ­ÄÚµå¸¦ ´ãÀ» º¯¼ö
+	CString exCode = _T("");//ì¸ì‹ëœ ì´ˆì„±ë¬¸ìì½”ë“œë¥¼ ì œì™¸í•œ ì •ê·œí™”ì½”ë“œë¥¼ ë‹´ì„ ë³€ìˆ˜
 
 	CStdioFile choFile;
 	CStdioFile jungFile;
 	CStdioFile jongFile;
 
-	if (!choFile.Open(_T("chosung.txt"), CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))//  ±âÁ¸ ÆÄÀÏÀ» ÀĞ±â ¸ğµå | ´Ù¸¥ ÇÁ·Î¼¼½º¿¡¼­ÀÇ Á¢±Ù(ÀĞ±â, ¾²±â¸¦ ¸øÇÏ°Ô ÇÔ)
+	if (!choFile.Open(_T("chosung.txt"), CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))//  ê¸°ì¡´ íŒŒì¼ì„ ì½ê¸° ëª¨ë“œ | ë‹¤ë¥¸ í”„ë¡œì„¸ìŠ¤ì—ì„œì˜ ì ‘ê·¼(ì½ê¸°, ì“°ê¸°ë¥¼ ëª»í•˜ê²Œ í•¨)
 	{
-		AfxMessageBox("ÃÊ¼ºÆÄÀÏ ¿ÀÇÂ ¿¡·¯");
+		AfxMessageBox("ì´ˆì„±íŒŒì¼ ì˜¤í”ˆ ì—ëŸ¬");
 		return;
 	}
-	if (!jungFile.Open(_T("jungsung.txt"), CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))//  ±âÁ¸ ÆÄÀÏÀ» ÀĞ±â ¸ğµå | ´Ù¸¥ ÇÁ·Î¼¼½º¿¡¼­ÀÇ Á¢±Ù(ÀĞ±â, ¾²±â¸¦ ¸øÇÏ°Ô ÇÔ)
+	if (!jungFile.Open(_T("jungsung.txt"), CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))//  ê¸°ì¡´ íŒŒì¼ì„ ì½ê¸° ëª¨ë“œ | ë‹¤ë¥¸ í”„ë¡œì„¸ìŠ¤ì—ì„œì˜ ì ‘ê·¼(ì½ê¸°, ì“°ê¸°ë¥¼ ëª»í•˜ê²Œ í•¨)
 	{
-		AfxMessageBox("Áß¼ºÆÄÀÏ ¿ÀÇÂ ¿¡·¯");
+		AfxMessageBox("ì¤‘ì„±íŒŒì¼ ì˜¤í”ˆ ì—ëŸ¬");
 		return;
 	}
-	if (!jongFile.Open(_T("jongsung.txt"), CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))//  ±âÁ¸ ÆÄÀÏÀ» ÀĞ±â ¸ğµå | ´Ù¸¥ ÇÁ·Î¼¼½º¿¡¼­ÀÇ Á¢±Ù(ÀĞ±â, ¾²±â¸¦ ¸øÇÏ°Ô ÇÔ)
+	if (!jongFile.Open(_T("jongsung.txt"), CFile::modeRead | CFile::shareDenyRead | CFile::shareDenyWrite, NULL))//  ê¸°ì¡´ íŒŒì¼ì„ ì½ê¸° ëª¨ë“œ | ë‹¤ë¥¸ í”„ë¡œì„¸ìŠ¤ì—ì„œì˜ ì ‘ê·¼(ì½ê¸°, ì“°ê¸°ë¥¼ ëª»í•˜ê²Œ í•¨)
 	{
-		AfxMessageBox("Á¾¼ºÆÄÀÏ ¿ÀÇÂ ¿¡·¯");
+		AfxMessageBox("ì¢…ì„±íŒŒì¼ ì˜¤í”ˆ ì—ëŸ¬");
 		return;
 	}
 
-	//¤Ì±¸ºĞÇÏ±â
+	//ã…œêµ¬ë¶„í•˜ê¸°
 	if ((cho == true) && (jung == false))
 	{
 		if ((((initY + endY) / 2) > pmY) && (jungTmp != ""))
 		{
-			if ((jungTmp == "¤Ñ") && (lastS == "5"))
+			if ((jungTmp == "ã…¡") && (lastS == "5"))
 				jung = false;
 			else if (jungTmp != "?")
 				jung = true;
 		}
 	}
 
-	//ÃÊ¼º
+	//ì´ˆì„±
 	if ((cho == false))
 	{
 		if (bTmp == true)
@@ -507,22 +510,22 @@ void CInputWnd::getKorean(CString scode)
 			buf.Trim();
 			AfxExtractSubString(chBuf, buf, 0, '|');
 			AfxExtractSubString(codeBuf, buf, 1, '|');
-			if (bTmp == true)//ÀÌ¾îÁú ¼ö ÀÖ´Â ÀÚÀ½µé ¸ğÀ½
+			if (bTmp == true)//ì´ì–´ì§ˆ ìˆ˜ ìˆëŠ” ììŒë“¤ ëª¨ìŒ
 			{
 				if (exCode.Find("&") == -1)
 				{
-					if ((endY > pmY) && (initX < pmX))//choTmpº¸´Ù ¾Æ·¡ÂÊ¿¡ È¹ÀÌ ±×¾îÁ³À»¶§
+					if ((endY > pmY) && (initX < pmX))//choTmpë³´ë‹¤ ì•„ë˜ìª½ì— íšì´ ê·¸ì–´ì¡Œì„ë•Œ
 					{
-						if (choTmp == "¤¡"&&exCode == "7")//'±Ù'°ú '¤©'À» ±¸ºĞÇÏ±â À§ÇÑ Á¶°Ç¹®
+						if (choTmp == "ã„±"&&exCode == "7")//'ê·¼'ê³¼ 'ã„¹'ì„ êµ¬ë¶„í•˜ê¸° ìœ„í•œ ì¡°ê±´ë¬¸
 						{
-							if (endX >(pmX + 10))//'±Ù'À¸·Î ÆÇÁ¤
+							if (endX >(pmX + 10))//'ê·¼'ìœ¼ë¡œ íŒì •
 							{
 								cho = true;
 								bTmp = false;
 								rb = 0;
 								break;
 							}
-							else//¤©·Î ÆÇÁ¤
+							else//ã„¹ë¡œ íŒì •
 							{
 								if (scode != codeBuf)
 									choTmp = "?";
@@ -542,10 +545,10 @@ void CInputWnd::getKorean(CString scode)
 					}
 
 
-					if (choTmp == "¤¤")//'³Ê'¿Í '³ª'¿Í '¤²'À» ±¸ºĞÇÏ±â À§ÇÑ Á¶°Ç¹®
+					if (choTmp == "ã„´")//'ë„ˆ'ì™€ 'ë‚˜'ì™€ 'ã…‚'ì„ êµ¬ë¶„í•˜ê¸° ìœ„í•œ ì¡°ê±´ë¬¸
 					{
 
-						if (endX > (pmX + 10))//Áß¼ºÀÌ Á¸ÀçÇÑ´Ù°í ÆÇÁ¤
+						if (endX > (pmX + 10))//ì¤‘ì„±ì´ ì¡´ì¬í•œë‹¤ê³  íŒì •
 						{
 
 							cho = true;
@@ -553,7 +556,7 @@ void CInputWnd::getKorean(CString scode)
 							rb = 0;
 							break;
 						}
-						else//¤²ÀÌ¶ó°í ÆÇÁ¤
+						else//ã…‚ì´ë¼ê³  íŒì •
 						{
 							if (scode != codeBuf)
 								choTmp = "?";
@@ -565,7 +568,7 @@ void CInputWnd::getKorean(CString scode)
 						}
 					}
 
-					else if ((initX < pmX) && (endX < (pmX*1.05)) && (initY < pmY) && (endY < (pmY*1.05)))//ÃÖ´ë°ª ¾È¿¡ È¹À» ±×¸±¶§
+					else if ((initX < pmX) && (endX < (pmX*1.05)) && (initY < pmY) && (endY < (pmY*1.05)))//ìµœëŒ€ê°’ ì•ˆì— íšì„ ê·¸ë¦´ë•Œ
 					{
 						if (scode == codeBuf)
 						{
@@ -580,17 +583,17 @@ void CInputWnd::getKorean(CString scode)
 						}
 					}
 
-					//¤¡->¤¸¿¹¿ÜÃ³¸®
-					if (choTmp == "¤¡" && exCode == "6")
+					//ã„±->ã…ˆì˜ˆì™¸ì²˜ë¦¬
+					if (choTmp == "ã„±" && exCode == "6")
 					{
 						choCode = scode;
-						choTmp = "¤¸";
+						choTmp = "ã…ˆ";
 						break;
 					}
 
 				}
 
-				if (exCode.Find("&") != -1 && (((initY + endY) / 2) > pmY))//Á¾¼º¿©ºÎ È®ÀÎ
+				if (exCode.Find("&") != -1 && (((initY + endY) / 2) > pmY))//ì¢…ì„±ì—¬ë¶€ í™•ì¸
 				{
 					cho = true;
 					jung = true;
@@ -598,9 +601,9 @@ void CInputWnd::getKorean(CString scode)
 					break;
 				}
 
-				if (exCode == codeBuf && choTmp == chBuf)//¸Â´Â µÈ¼Ò¸®ÀÎÁö È®ÀÎ
+				if (exCode == codeBuf && choTmp == chBuf)//ë§ëŠ” ëœì†Œë¦¬ì¸ì§€ í™•ì¸
 				{
-					if (choTmp == "¤²")//'¤²'°ú '¤Â'¸¦ ±¸ºĞ
+					if (choTmp == "ã…‚")//'ã…‚'ê³¼ 'ã…’'ë¥¼ êµ¬ë¶„
 					{
 						CString rbBTmp;
 						CString chBTmp;
@@ -613,9 +616,9 @@ void CInputWnd::getKorean(CString scode)
 							AfxExtractSubString(rbBTmp, buf, 0, '|');
 							AfxExtractSubString(chBTmp, buf, 1, '|');
 							AfxExtractSubString(codeBTmp, buf, 2, '|');
-							if ((rbBTmp == "2") && (codeBTmp == exCode) && (chBTmp == "¤Â"))
+							if ((rbBTmp == "2") && (codeBTmp == exCode) && (chBTmp == "ã…’"))
 							{
-								if ((pEndY + ((endY - initY)*0.2)) < endY && (ppEndY + ((endY - initY)*0.2)) < pEndY)//'¤Â'ÀÎ°æ¿ì
+								if ((pEndY + ((endY - initY)*0.2)) < endY && (ppEndY + ((endY - initY)*0.2)) < pEndY)//'ã…’'ì¸ê²½ìš°
 								{
 
 									cho = true;
@@ -678,7 +681,7 @@ void CInputWnd::getKorean(CString scode)
 		}
 	}
 
-	//Áß¼º
+	//ì¤‘ì„±
 	if (((cho == true) && (jung == false)) || (bTmp == true))
 	{
 		if ((rb != 3 && rb != 2) && (scode != choCode) && (bTmp == false))
@@ -727,9 +730,9 @@ void CInputWnd::getKorean(CString scode)
 				{
 					jungCode = scode2;
 					jungTmp = chBuf;
-					if (jungTmp == "¤Ì")
-						bTmp2 = true;//Áß¼ºÀÌ ¤Ì ¶ó°í ÆÇº°µÉ °æ¿ì
-					if (bTmp2 == true && jungTmp != "¤Ì")
+					if (jungTmp == "ã…œ")
+						bTmp2 = true;//ì¤‘ì„±ì´ ã…œ ë¼ê³  íŒë³„ë  ê²½ìš°
+					if (bTmp2 == true && jungTmp != "ã…œ")
 						bTmp2 = false;
 					break;
 				}
@@ -747,7 +750,7 @@ void CInputWnd::getKorean(CString scode)
 		}
 	}
 
-	//Á¾¼º
+	//ì¢…ì„±
 	if ((jung == true && cho == true) || bTmp2 == true)
 	{
 		if (bTmp2 == true)
@@ -773,9 +776,9 @@ void CInputWnd::getKorean(CString scode)
 			CString scode3 = scode.Right(scode.GetLength() - choCode.GetLength() - 1 - jungCode.GetLength() - 1);
 			if (bTmp2 == true)
 			{
-				if (jongTmp == "" && (jungTmp == "¤Ì" || jungTmp == "?") && (codeBuf == jongCode.Left(jongCode.GetLength())))
+				if (jongTmp == "" && (jungTmp == "ã…œ" || jungTmp == "?") && (codeBuf == jongCode.Left(jongCode.GetLength())))
 				{
-					jungTmp = "¤Ñ";
+					jungTmp = "ã…¡";
 					jungCode = "7";
 					jung = true;
 
@@ -789,7 +792,7 @@ void CInputWnd::getKorean(CString scode)
 
 				else if (jongCode != "5" && (((initY + endY) / 2) > (pmY + 10)))
 				{
-					jungTmp = "¤Ì";
+					jungTmp = "ã…œ";
 					jungCode = "7&5";
 					jung = true;
 					jongCode = jongCode.Right(jongCode.GetLength() - 2);
@@ -806,9 +809,9 @@ void CInputWnd::getKorean(CString scode)
 
 				}
 				/*
-				else if(jungTmp == "¤Ì"&&(((initY+endY)/2)+10>pmY)&&endX>pmX)
+				else if(jungTmp == "ã…œ"&&(((initY+endY)/2)+10>pmY)&&endX>pmX)
 				{
-				jungTmp = "¤Ì";
+				jungTmp = "ã…œ";
 				jungCode = "7&5";
 				jung = true;
 
@@ -859,22 +862,22 @@ void CInputWnd::getKorean(CString scode)
 
 CString CInputWnd::mergeJaso(CString choSung, CString jungSung, CString jongSung)
 {
-	CString ChoSungTbl = "¤¡¤¢¤¤¤§¤¨¤©¤±¤²¤³¤µ¤¶¤·¤¸¤¹¤º¤»¤¼¤½¤¾";
-	CString JungSungTbl = "¤¿¤À¤Á¤Â¤Ã¤Ä¤Å¤Æ¤Ç¤È¤É¤Ê¤Ë¤Ì¤Í¤Î¤Ï¤Ğ¤Ñ¤Ò¤Ó";
-	CString JongSungTbl = "  ¤¡¤¢¤£¤¤¤¥¤¦¤§¤©¤ª¤«¤¬¤­¤®¤¯¤°¤±¤²¤´¤µ¤¶¤·¤¸¤º¤»¤¼¤½¤¾";
+	CString ChoSungTbl = "ã„±ã„²ã„´ã„·ã„¸ã„¹ã…ã…‚ã…ƒã……ã…†ã…‡ã…ˆã…‰ã…Šã…‹ã…Œã…ã…";
+	CString JungSungTbl = "ã…ã…ã…‘ã…’ã…“ã…”ã…•ã…–ã…—ã…˜ã…™ã…šã…›ã…œã…ã…ã…Ÿã… ã…¡ã…¢ã…£";
+	CString JongSungTbl = "  ã„±ã„²ã„³ã„´ã„µã„¶ã„·ã„¹ã„ºã„»ã„¼ã„½ã„¾ã„¿ã…€ã…ã…‚ã…„ã……ã…†ã…‡ã…ˆã…Šã…‹ã…Œã…ã…";
 	int m_UniCodeHangulBase = 0xAC00;
 
 	int ChoSungPosition, JungSungPosition, JongSungPosition;
 	int nUniCode;
 
-	ChoSungPosition = ChoSungTbl.Find(choSung) / 2;     // ÃÊ¼º À§Ä¡
-	JungSungPosition = JungSungTbl.Find(jungSung) / 2;   // Áß¼º À§Ä¡
-	JongSungPosition = JongSungTbl.Find(jongSung) / 2;   // Á¾¼º À§Ä¡
+	ChoSungPosition = ChoSungTbl.Find(choSung) / 2;     // ì´ˆì„± ìœ„ì¹˜
+	JungSungPosition = JungSungTbl.Find(jungSung) / 2;   // ì¤‘ì„± ìœ„ì¹˜
+	JongSungPosition = JongSungTbl.Find(jongSung) / 2;   // ì¢…ì„± ìœ„ì¹˜
 
 
-	// ¾Õ¼­ ¸¸µé¾î ³½ °è»ê½Ä
+	// ì•ì„œ ë§Œë“¤ì–´ ë‚¸ ê³„ì‚°ì‹
 	nUniCode = m_UniCodeHangulBase + (ChoSungPosition * 21 + JungSungPosition) * 28 + JongSungPosition;
-	// ÄÚµå°ªÀ» ¹®ÀÚ·Î º¯È¯
+	// ì½”ë“œê°’ì„ ë¬¸ìë¡œ ë³€í™˜
 	wchar_t tmp = nUniCode;
 	CString ret = tmp;
 	return ret;
@@ -882,9 +885,9 @@ CString CInputWnd::mergeJaso(CString choSung, CString jungSung, CString jongSung
 
 char CInputWnd::EvalDirection(int dx, int dy, char prev)
 {
-	float d;//±â¿ï±â
+	float d;//ê¸°ìš¸ê¸°
 
-	// yÃà°ú ÆòÇàÀÎ ÀÔ·ÂÀÇ °æ¿ì´Â ±â¿ï±â¸¦ ÀÓÀÇÀÇ Å« °ªÀ¸·Î Á¤ÇÔ
+	// yì¶•ê³¼ í‰í–‰ì¸ ì…ë ¥ì˜ ê²½ìš°ëŠ” ê¸°ìš¸ê¸°ë¥¼ ì„ì˜ì˜ í° ê°’ìœ¼ë¡œ ì •í•¨
 	if (dx == 0){
 		dx = 1;
 		if (dy > 0) d = 10.0;
@@ -893,7 +896,7 @@ char CInputWnd::EvalDirection(int dx, int dy, char prev)
 	else d = (float)dy / dx;
 
 
-	// ¿µ¿ª¿¡ µû¸¥ °ªÀ» ¸®ÅÏ
+	// ì˜ì—­ì— ë”°ë¥¸ ê°’ì„ ë¦¬í„´
 	if (dx > 0)
 	{
 		if (d > 2.4142) return '5'; // tan(3*pi/8)
@@ -917,7 +920,7 @@ void  CInputWnd::clear() {
 	CRect rect;
 	CObPoint* pPoint;
 
-	// ¸ğµç Æ÷ÀÎÆ®¸¦ »èÁ¦
+	// ëª¨ë“  í¬ì¸íŠ¸ë¥¼ ì‚­ì œ
 	//for (int i = m_Points.GetCount(); i; i--)
 	//{ 
 	//	pPoint = (CObPoint*)m_Points.GetTail(); 
@@ -928,13 +931,13 @@ void  CInputWnd::clear() {
 
 	//m_InputPoints.RemoveAll();
 
-	// ÀÔ·ÂµÈ °ªÀ» ÃÊ±âÈ­
+	// ì…ë ¥ëœ ê°’ì„ ì´ˆê¸°í™”
 	//m_Input = "";
 	//m_InputDetail = "";
 	//m_SCode = "";
-	m_pPatternEdit->SetWindowText("");//Á÷Á¢ ÀûÀº ±ä ÆĞÅÏ
-	//m_pSCodeEdit->SetWindowText("");//½ÉÇÃÄÚµå
-	m_pDebug->SetWindowText("");//ÇĞ½ÀÄÚµå ¾Æ·¡¿¡ ÀÖ´Â edit
+	m_pPatternEdit->SetWindowText("");//ì§ì ‘ ì ì€ ê¸´ íŒ¨í„´
+	//m_pSCodeEdit->SetWindowText("");//ì‹¬í”Œì½”ë“œ
+	m_pDebug->SetWindowText("");//í•™ìŠµì½”ë“œ ì•„ë˜ì— ìˆëŠ” edit
 	mX = 0;
 	mY = 0;
 	endY = 0;
@@ -942,7 +945,7 @@ void  CInputWnd::clear() {
 	ppEndY = 0;
 	m_pMaxXEdit->SetWindowText("");
 	m_pMaxYEdit->SetWindowText("");
-	//m_pPatternEdit1->SetWindowText("");//°á°úÃâ·ÂÃ¢
+	//m_pPatternEdit1->SetWindowText("");//ê²°ê³¼ì¶œë ¥ì°½
 	//m_PrevInputPoint.x = -1;
 	//m_PrevInputPoint.y = -1;
 
@@ -963,7 +966,7 @@ void  CInputWnd::clear() {
 
 	rb = 0;
 
-	// È­¸éÀ» Áö¿ò
+	// í™”ë©´ì„ ì§€ì›€
 	//dc.SelectObject(GetStockObject(WHITE_PEN));
 	//GetClientRect(rect);
 	//dc.Rectangle(rect);
@@ -975,9 +978,9 @@ bool  CInputWnd::preventDupJung(CString sCode) {
 
 	file.Open(_T("jungsung.txt"), CFile::modeCreate | CFile::modeNoTruncate | CFile::modeReadWrite);
 
-	while (file.ReadString(sLine))  // ÇÑ ÁÙ¾¿ ÀĞ¾îµéÀÓ
+	while (file.ReadString(sLine))  // í•œ ì¤„ì”© ì½ì–´ë“¤ì„
 	{
-		//for (int i=0;AfxExtractSubString(sToken, sLine, i, '|' );i++)    // ','·Î ÆÄ½Ì
+		//for (int i=0;AfxExtractSubString(sToken, sLine, i, '|' );i++)    // ','ë¡œ íŒŒì‹±
 		AfxExtractSubString(sToken, sLine, 2, '|');
 
 		if (sToken == sCode){
@@ -996,9 +999,9 @@ bool  CInputWnd::preventDupCho(CString sCode) {
 
 	file.Open(_T("chosung.txt"), CFile::modeCreate | CFile::modeNoTruncate | CFile::modeReadWrite);
 
-	while (file.ReadString(sLine))  // ÇÑ ÁÙ¾¿ ÀĞ¾îµéÀÓ
+	while (file.ReadString(sLine))  // í•œ ì¤„ì”© ì½ì–´ë“¤ì„
 	{
-		//for (int i=0;AfxExtractSubString(sToken, sLine, i, '|' );i++)    // ','·Î ÆÄ½Ì
+		//for (int i=0;AfxExtractSubString(sToken, sLine, i, '|' );i++)    // ','ë¡œ íŒŒì‹±
 		AfxExtractSubString(sToken, sLine, 1, '|');
 
 		if (sToken == sCode){
@@ -1018,9 +1021,9 @@ bool  CInputWnd::preventDupJong(CString sCode) {
 
 	file.Open(_T("jongsung.txt"), CFile::modeCreate | CFile::modeNoTruncate | CFile::modeReadWrite);
 
-	while (file.ReadString(sLine))  // ÇÑ ÁÙ¾¿ ÀĞ¾îµéÀÓ
+	while (file.ReadString(sLine))  // í•œ ì¤„ì”© ì½ì–´ë“¤ì„
 	{
-		//for (int i=0;AfxExtractSubString(sToken, sLine, i, '|' );i++)    // ','·Î ÆÄ½Ì
+		//for (int i=0;AfxExtractSubString(sToken, sLine, i, '|' );i++)    // ','ë¡œ íŒŒì‹±
 		AfxExtractSubString(sToken, sLine, 1, '|');
 
 		if (sToken == sCode){
@@ -1055,7 +1058,7 @@ void  CInputWnd::inputScodeToCho() {
 
 	if (!choFile.Open(_T("chosung.txt"), CFile::modeCreate | CFile::modeNoTruncate | CFile::modeReadWrite))
 	{
-		AfxMessageBox("ÃÊ¼ºÆÄÀÏ ¿ÀÇÂ ¿¡·¯");
+		AfxMessageBox("ì´ˆì„±íŒŒì¼ ì˜¤í”ˆ ì—ëŸ¬");
 		return;
 	}
 
@@ -1088,7 +1091,7 @@ void  CInputWnd::inputScodeToJong() {
 	}
 
 	if (!jongFile.Open(_T("jongsung.txt"), CFile::modeCreate | CFile::modeNoTruncate | CFile::modeReadWrite)) {
-		AfxMessageBox("Á¾¼ºÆÄÀÏ ¿ÀÇÂ ¿¡·¯");
+		AfxMessageBox("ì¢…ì„±íŒŒì¼ ì˜¤í”ˆ ì—ëŸ¬");
 		return;
 	}
 
@@ -1102,51 +1105,51 @@ void  CInputWnd::inputScodeToJong() {
 int CInputWnd::makeJShape(CString jungsung) {
 	int jShape;
 
-	if (jungsung == _T("¤Ç")) {
+	if (jungsung == _T("ã…—")) {
 		jShape = 1;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Ë")) {
+	else if (jungsung == _T("ã…›")) {
 		jShape = 1;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Ì")) {
+	else if (jungsung == _T("ã…œ")) {
 		jShape = 1;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Ğ")) {
+	else if (jungsung == _T("ã… ")) {
 		jShape = 1;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Ñ")) {
+	else if (jungsung == _T("ã…¡")) {
 		jShape = 1;
 		return jShape;
 	}
-	else if (jungsung == _T("¤È")) {
+	else if (jungsung == _T("ã…˜")) {
 		jShape = 3;
 		return jShape;
 	}
-	else if (jungsung == _T("¤É")) {
+	else if (jungsung == _T("ã…™")) {
 		jShape = 3;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Ê")) {
+	else if (jungsung == _T("ã…š")) {
 		jShape = 3;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Í")) {
+	else if (jungsung == _T("ã…")) {
 		jShape = 3;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Î")) {
+	else if (jungsung == _T("ã…")) {
 		jShape = 3;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Ï")) {
+	else if (jungsung == _T("ã…Ÿ")) {
 		jShape = 3;
 		return jShape;
 	}
-	else if (jungsung == _T("¤Ò")) {
+	else if (jungsung == _T("ã…¢")) {
 		jShape = 3;
 		return jShape;
 	}
@@ -1177,7 +1180,7 @@ void CInputWnd::inputScodeToJung() {
 	}
 	if (!jungFile.Open(_T("jungsung.txt"), CFile::modeCreate | CFile::modeNoTruncate | CFile::modeReadWrite))
 	{
-		AfxMessageBox("Áß¼ºÆÄÀÏ ¿ÀÇÂ ¿¡·¯");
+		AfxMessageBox("ì¤‘ì„±íŒŒì¼ ì˜¤í”ˆ ì—ëŸ¬");
 		return;
 	}
 
@@ -1197,7 +1200,7 @@ void CInputWnd::Clear()
 	CRect rect;
 	CObPoint* pPoint;
 
-	// ¸ğµç Æ÷ÀÎÆ®¸¦ »èÁ¦
+	// ëª¨ë“  í¬ì¸íŠ¸ë¥¼ ì‚­ì œ
 	for (int i = m_Points.GetCount(); i; i--)
 	{
 		pPoint = (CObPoint*)m_Points.GetTail();
@@ -1208,7 +1211,7 @@ void CInputWnd::Clear()
 
 	m_InputPoints.RemoveAll();
 
-	// ÀÔ·ÂµÈ °ªÀ» ÃÊ±âÈ­
+	// ì…ë ¥ëœ ê°’ì„ ì´ˆê¸°í™”
 	m_Input = "";
 	m_InputDetail = "";
 	m_SCode = "";
@@ -1243,7 +1246,7 @@ void CInputWnd::Clear()
 
 	rb = 0;
 
-	// È­¸éÀ» Áö¿ò
+	// í™”ë©´ì„ ì§€ì›€
 	dc.SelectObject(GetStockObject(WHITE_PEN));
 	GetClientRect(rect);
 	dc.Rectangle(rect);
@@ -1261,7 +1264,7 @@ void CInputWnd::DrawInputPoint(CDC &dc)
 	pen.CreatePen(PS_SOLID, 1, RGB(0xFF, 0, 0));
 	oldPen = (CPen*)dc.SelectObject(&pen);
 
-	// ÀÔ·Â Æ÷ÀÎÆ® Âï±â
+	// ì…ë ¥ í¬ì¸íŠ¸ ì°ê¸°
 	pos = m_InputPoints.GetHeadPosition();
 	while (pos){
 		pPoint = (CObPoint *)m_InputPoints.GetNext(pos);
